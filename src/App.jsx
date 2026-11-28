@@ -7,6 +7,7 @@ import AccountBar from './components/AccountBar'
 import Brand from './components/Brand'
 import PainLabCard from './components/PainLabCard'
 import WeekSummary from './components/WeekSummary'
+import HabitHistory from './components/HabitHistory'
 import TabBar, { TABS } from './components/TabBar'
 import FoodTracker from './components/FoodTracker'
 import SettingsSheet from './components/SettingsSheet'
@@ -230,6 +231,8 @@ export default function App() {
             />
           </div>
         </div>
+
+        <HabitHistory today={today} habits={habits} log={habitLog} />
         </>
         )}
 

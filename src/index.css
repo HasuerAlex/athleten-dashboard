@@ -25,6 +25,12 @@
   --color-on-tint: #ffffff;
   --color-rating: #b45309; /* nur für Sterne-Bewertung, 5.0:1 auf Weiß */
   --color-other: #be185d; /* Sportart „Sonstiges“, 6.0:1 auf Weiß */
+  /* Habit-Verlauf: eine neutrale Stufenskala, hell → dunkel (Stufe 0 = nichts erledigt) */
+  --color-heat-0: #e9e9ee;
+  --color-heat-1: #b0b0b5;
+  --color-heat-2: #86868b;
+  --color-heat-3: #55555a;
+  --color-heat-4: #1d1d1f;
 
   /* Typo-Skala nach den Apple-Textstilen; rem, damit die Browser-Schriftgröße greift */
   --text-large-title: 2.125rem;
@@ -61,6 +67,11 @@
     --color-on-tint: #000000;
     --color-rating: #fbbf24;
     --color-other: #f472b6;
+    --color-heat-0: #2c2c2e;
+    --color-heat-1: #4a4a4e;
+    --color-heat-2: #7c7c80;
+    --color-heat-3: #b4b4b9;
+    --color-heat-4: #f5f5f7;
   }
 }
 
