@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Table2, BarChart3 } from 'lucide-react'
+import { Table2, BarChart3, ChevronRight, X } from 'lucide-react'
 import { addDays, mondayOf, toKey } from '../lib/utils'
 
 /*
@@ -19,7 +19,7 @@ const pct = (v) => `${Math.round(v * 100)} %`
 const fmtDay = (d) => d.toLocaleDateString('de-AT', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
 const fmtMonth = (d, long) => d.toLocaleDateString('de-AT', { month: long ? 'long' : 'short' })
 
-export default function HabitHistory({ today, habits, log }) {
+function HabitHistory({ today, habits, log }) {
   const [period, setPeriod] = useState('month')
   const [habitId, setHabitId] = useState('all')
   const [showTable, setShowTable] = useState(false)
@@ -77,10 +77,7 @@ export default function HabitHistory({ today, habits, log }) {
   if (habits.length === 0) return null
 
   return (
-    <section aria-labelledby="history-title" className="space-y-4">
-      <h2 id="history-title" className="px-1 text-title-2 font-bold">
-        Habit-Verlauf
-      </h2>
+    <div className="space-y-4">
 
       {/* Filter in einer Zeile über dem Diagramm */}
       <div className="flex flex-wrap items-center gap-2">
@@ -148,7 +145,7 @@ export default function HabitHistory({ today, habits, log }) {
           </>
         )}
       </div>
-    </section>
+    </div>
   )
 }
 
@@ -374,5 +371,106 @@ function BucketTable({ buckets, bucket }) {
         ))}
       </tbody>
     </table>
+  )
+}
+
+/* ---------- Kompakte Vorschau unter den Habits + Dialog mit dem vollen Diagramm ---------- */
+
+const PREVIEW_WEEKS = 12
+
+export default function HabitHistoryCard({ today, habits, log }) {
+  const [open, setOpen] = useState(false)
+  if (habits.length === 0) return null
+
+  const todayKey = toKey(today)
+  const start = addDays(mondayOf(today), -(PREVIEW_WEEKS - 1) * 7)
+  const days = Array.from({ length: PREVIEW_WEEKS * 7 }, (_, i) => {
+    const date = addDays(start, i)
+    const key = toKey(date)
+    if (key > todayKey) return { key, lv: null }
+    const done = habits.filter((h) => log[h.id]?.[key]).length
+    return { key, lv: done === 0 ? 0 : Math.max(1, Math.ceil((done / habits.length) * 4)), done }
+  })
+  // Quote der letzten 28 Tage bis heute
+  let done = 0
+  let total = 0
+  for (let i = 0; i < 28; i++) {
+    const key = toKey(addDays(today, -i))
+    done += habits.filter((h) => log[h.id]?.[key]).length
+    total += habits.length
+  }
+
+  return (
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        aria-haspopup="dialog"
+        className="flex w-full items-center gap-4 rounded-3xl bg-surface p-4 text-left transition-colors hover:bg-fill/50 sm:p-5"
+      >
+        <span className="min-w-0 flex-1">
+          <span className="block text-headline font-semibold">Verlauf</span>
+          <span className="block text-subhead text-label-2">
+            Letzte 4 Wochen: <span className="font-semibold text-label tabular-nums">{total ? pct(done / total) : '–'}</span>
+          </span>
+          {/* Mini-Kalender: 12 Wochen */}
+          <span
+            className="mt-3 grid grid-flow-col gap-[3px]"
+            style={{ gridTemplateRows: 'repeat(7, 8px)', gridAutoColumns: '8px' }}
+            aria-hidden
+          >
+            {days.map((d) => (
+              <span key={d.key} className="rounded-[2px]" style={{ background: d.lv === null ? 'transparent' : HEAT[d.lv] }} />
+            ))}
+          </span>
+        </span>
+        <span className="flex shrink-0 items-center gap-1 self-start text-subhead text-label-2">
+          Öffnen <ChevronRight className="size-5" aria-hidden />
+        </span>
+      </button>
+
+      {open && <HistoryDialog onClose={() => setOpen(false)} today={today} habits={habits} log={log} />}
+    </>
+  )
+}
+
+function HistoryDialog({ onClose, ...props }) {
+  useEffect(() => {
+    const onKey = (e) => e.key === 'Escape' && onClose()
+    document.addEventListener('keydown', onKey)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prev
+    }
+  }, [onClose])
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center sm:p-4" onClick={onClose}>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="history-title"
+        onClick={(e) => e.stopPropagation()}
+        className="flex max-h-[94dvh] w-full max-w-5xl flex-col overflow-hidden rounded-t-3xl bg-bg shadow-2xl sm:rounded-3xl"
+      >
+        <div className="flex shrink-0 items-center justify-between gap-3 px-5 pt-3 pb-2">
+          <h2 id="history-title" className="text-title-2 font-bold">
+            Habit-Verlauf
+          </h2>
+          <button
+            onClick={onClose}
+            aria-label="Schließen"
+            autoFocus
+            className="grid size-11 place-items-center rounded-full text-label-2 hover:bg-fill hover:text-label"
+          >
+            <X className="size-5" />
+          </button>
+        </div>
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:px-5">
+          <HabitHistory {...props} />
+        </div>
+      </div>
+    </div>
   )
 }

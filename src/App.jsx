@@ -219,7 +219,7 @@ export default function App() {
             setDayNotes={setDayNotes}
             onDeleted={onDeleted}
           />
-          <div className="space-y-8">
+          <div className="space-y-4">
             <HabitTracker
               weekStart={weekStart}
               today={today}
@@ -229,10 +229,10 @@ export default function App() {
               setLog={setHabitLog}
               onDeleted={onDeleted}
             />
+            <HabitHistory today={today} habits={habits} log={habitLog} />
           </div>
         </div>
 
-        <HabitHistory today={today} habits={habits} log={habitLog} />
         </>
         )}
 
