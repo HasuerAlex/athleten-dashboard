@@ -441,7 +441,7 @@ function AddSessionSheet({ defaultDay, onClose, onAdd }) {
     onAdd({
       day: Number(form.day),
       sport: form.sport,
-      title: form.title.trim() || `${SPORTS[form.sport].label}-Einheit`,
+      title: form.title.trim() || SPORTS[form.sport].defaultTitle || `${SPORTS[form.sport].label}-Einheit`,
       duration,
       distance: form.sport === 'strength' ? null : distance,
       start: form.start || null,
@@ -481,7 +481,7 @@ function AddSessionSheet({ defaultDay, onClose, onAdd }) {
         <div className="space-y-5 px-5 pt-5">
           <fieldset>
             <legend className="text-subhead text-label-2">Sportart</legend>
-            <div className="mt-1.5 grid grid-cols-4 gap-1 rounded-2xl bg-fill p-1">
+            <div className="mt-1.5 grid grid-cols-3 gap-1 rounded-2xl bg-fill p-1 sm:grid-cols-5">
               {Object.entries(SPORTS).map(([key, sp]) => {
                 const Icon = sp.icon
                 const active = form.sport === key
@@ -529,7 +529,7 @@ function AddSessionSheet({ defaultDay, onClose, onAdd }) {
               autoFocus
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
-              placeholder={`${SPORTS[form.sport].label}-Einheit`}
+              placeholder={SPORTS[form.sport].example ?? `${SPORTS[form.sport].label}-Einheit`}
               enterKeyHint="done"
               className={field}
             />

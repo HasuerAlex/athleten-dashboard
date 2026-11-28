@@ -27,7 +27,7 @@ export function weekSessions({ plans = {}, recurring = [], recurringState = {} }
   return [...rec, ...(plans[weekKey] ?? [])]
 }
 
-const SPORT_ORDER = ['swim', 'bike', 'run', 'strength']
+const SPORT_ORDER = ['swim', 'bike', 'run', 'strength', 'other']
 
 /**
  * Zusammenfassung einer Woche.

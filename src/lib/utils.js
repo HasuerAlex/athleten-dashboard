@@ -1,4 +1,4 @@
-import { Waves, Bike, Footprints, Dumbbell } from 'lucide-react'
+import { Waves, Bike, Footprints, Dumbbell, Shapes } from 'lucide-react'
 
 /* ---------- Datum ---------- */
 
@@ -73,4 +73,5 @@ export const SPORTS = {
   bike: { label: 'Rad', icon: Bike, text: 'text-bike', bg: 'bg-bike', tint: 'bg-bike/15', border: 'border-bike' },
   run: { label: 'Laufen', icon: Footprints, text: 'text-run', bg: 'bg-run', tint: 'bg-run/15', border: 'border-run' },
   strength: { label: 'Kraft', icon: Dumbbell, text: 'text-strength', bg: 'bg-strength', tint: 'bg-strength/15', border: 'border-strength' },
+  other: { label: 'Sonstiges', icon: Shapes, text: 'text-other', bg: 'bg-other', tint: 'bg-other/15', border: 'border-other', defaultTitle: 'Training', example: 'z. B. Fußball, Klettern, Yoga' },
 }

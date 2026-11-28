@@ -16,7 +16,7 @@ export const ACTIVITY_LEVELS = {
 export const SEXES = { m: 'Männlich', f: 'Weiblich', x: 'Keine Angabe' }
 
 // Durchschnittliche MET-Werte bei moderater Intensität
-const MET = { swim: 7, bike: 8, run: 9.5, strength: 5 }
+const MET = { swim: 7, bike: 8, run: 9.5, strength: 5, other: 6 } // other: Mittelwert für gemischte Sportarten
 
 export const profileComplete = (p) => Boolean(p && p.weight > 0 && p.height > 0 && p.age > 0)
 

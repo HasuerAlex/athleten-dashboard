@@ -24,6 +24,7 @@
   --color-strength: #6d28d9;
   --color-on-tint: #ffffff;
   --color-rating: #b45309; /* nur für Sterne-Bewertung, 5.0:1 auf Weiß */
+  --color-other: #be185d; /* Sportart „Sonstiges“, 6.0:1 auf Weiß */
 
   /* Typo-Skala nach den Apple-Textstilen; rem, damit die Browser-Schriftgröße greift */
   --text-large-title: 2.125rem;
@@ -59,6 +60,7 @@
     --color-strength: #a78bfa;
     --color-on-tint: #000000;
     --color-rating: #fbbf24;
+    --color-other: #f472b6;
   }
 }
 
