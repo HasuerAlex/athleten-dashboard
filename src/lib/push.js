@@ -143,7 +143,7 @@ export function useReminders(uid, onError) {
 export async function showTestNotification() {
   const registration = await navigator.serviceWorker.ready
   await registration.showNotification('LockedIn', {
-    body: 'So sehen deine Erinnerungen aus. 💪',
+    body: 'So kommen deine Erinnerungen an.',
     icon: 'icon-192.png',
     badge: 'icon-192.png',
     tag: 'test',

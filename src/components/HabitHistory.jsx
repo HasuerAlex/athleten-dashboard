@@ -123,7 +123,7 @@ function HabitHistory({ today, habits, log }) {
         </dl>
 
         <div className="mt-5 flex items-center justify-between gap-3">
-          <h3 className="text-footnote font-semibold text-label-2">Jeder Tag – {habitName}</h3>
+          <h3 className="text-footnote font-semibold text-label-2">Pro Tag: {habitName}</h3>
           <button
             onClick={() => setShowTable(!showTable)}
             aria-pressed={showTable}

@@ -306,7 +306,7 @@ function FuelCard({ session, weight }) {
           <Phase icon={plan.during.carbs > 0 ? Zap : Droplets} title="Unterwegs" time={start && `ab ${shiftTime(start, 20)}`}>
             {plan.during.carbs > 0 ? (
               <>
-                {plan.during.carbsPerHour} g KH und {plan.during.fluidPerHour} ml pro Stunde – gesamt ≈ {plan.during.carbs} g ({plan.during.gels}{' '}
+                {plan.during.carbsPerHour} g KH und {plan.during.fluidPerHour} ml pro Stunde, gesamt ≈ {plan.during.carbs} g ({plan.during.gels}{' '}
                 {plan.during.gels === 1 ? 'Gel' : 'Gels'} à 25 g oder Sportgetränk), {(plan.during.fluid / 1000).toLocaleString("de-AT")} l
               </>
             ) : (
@@ -485,7 +485,7 @@ function FoodSheet({ defaultMeal, favorites, setFavorites, recent, onClose, onAd
             <div className="space-y-5">
               {query.trim().length >= 2 ? (
                 !db ? (
-                  <p className="py-6 text-center text-subhead text-label-2">{dbError ? 'Die Lebensmittel-Datenbank konnte nicht geladen werden. Prüfe die Verbindung.' : 'Lade Datenbank …'}</p>
+                  <p className="py-6 text-center text-subhead text-label-2">{dbError ? 'LockedIn konnte die Lebensmittel-Datenbank nicht laden. Bist du online?' : 'Lade Datenbank …'}</p>
                 ) : results.length === 0 ? (
                   <p className="py-6 text-center text-subhead text-label-2">Nichts gefunden. Probier ein anderes Wort oder gib die Werte manuell ein.</p>
                 ) : (
@@ -509,7 +509,7 @@ function FoodSheet({ defaultMeal, favorites, setFavorites, recent, onClose, onAd
                 <>
                   {favorites.length > 0 && (
                     <QuickList
-                      title="Favoriten – mit einem Tipp hinzufügen"
+                      title="Favoriten"
                       items={favorites}
                       icon={Star}
                       onPick={(f) => onAdd({ name: f.name, ...(f.grams ? { grams: f.grams } : {}), kcal: f.kcal, protein: f.protein, carbs: f.carbs, fat: f.fat, meal })}
@@ -518,7 +518,7 @@ function FoodSheet({ defaultMeal, favorites, setFavorites, recent, onClose, onAd
                   )}
                   {recent.length > 0 && (
                     <QuickList
-                      title="Zuletzt gegessen – Menge anpassen"
+                      title="Zuletzt gegessen"
                       items={recent}
                       icon={History}
                       onPick={(r) => (r.grams ? pick(per100Of(r), r.grams) : onAdd({ name: r.name, kcal: r.kcal, protein: r.protein, carbs: r.carbs, fat: r.fat, meal }))}

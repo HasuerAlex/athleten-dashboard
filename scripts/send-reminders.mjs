@@ -97,6 +97,12 @@ async function userData(uid, keys) {
   return Object.fromEntries(keys.map((k, i) => [k, snaps[i].exists ? snaps[i].data().value : undefined]))
 }
 
+const SPORT_LABELS = { swim: 'Schwimmen', bike: 'Rad', run: 'Laufen', strength: 'Kraft', other: 'Sonstiges' }
+
+/** z. B. „Rad · ab 17:00 · 45 km“ */
+const sessionDetails = (s) =>
+  [SPORT_LABELS[s.sport], s.start && `ab ${s.start}`, Number(s.distance) > 0 && `${String(s.distance).replace('.', ',')} km`].filter(Boolean).join(' · ')
+
 const listText = (items) => (items.length <= 3 ? items.join(' · ') : `${items.slice(0, 3).join(' · ')} und ${items.length - 3} weitere`)
 
 async function trainingMessage(uid, day) {
@@ -111,7 +117,7 @@ async function trainingMessage(uid, day) {
   const total = open.reduce((a, s) => a + (Number(s.duration) || 0), 0)
   return {
     title: `Heute: ${open.length === 1 ? open[0].title : `${open.length} Einheiten`} (${fmtDuration(total)})`,
-    body: open.length === 1 ? 'Viel Erfolg beim Training! 💪' : listText(open.map((s) => `${s.title} (${fmtDuration(s.duration)})`)),
+    body: open.length === 1 ? sessionDetails(open[0]) : listText(open.map((s) => `${s.title} (${fmtDuration(s.duration)})`)),
     tag: 'training',
   }
 }

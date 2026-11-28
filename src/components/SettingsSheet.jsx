@@ -105,7 +105,7 @@ function Notifications({ uid }) {
     } catch (e) {
       setMessage(
         e.code === 'denied'
-          ? 'Benachrichtigungen sind für diese Seite blockiert. Erlaube sie in den Browser- bzw. Systemeinstellungen und versuch es noch einmal.'
+          ? 'Dein Browser blockiert Benachrichtigungen für LockedIn. Erlaub sie in den Browser- oder Systemeinstellungen und versuch es dann noch einmal.'
           : e.code === 'dismissed'
             ? 'Du hast die Anfrage geschlossen. Tippe noch einmal und wähle „Erlauben“.'
             : `Das hat nicht geklappt (${e.code || e.message}).`,
@@ -123,7 +123,7 @@ function Notifications({ uid }) {
 
       <div className="overflow-hidden rounded-2xl bg-surface">
         {!pushConfigured ? (
-          <p className="p-4 text-subhead text-label-2">Push-Benachrichtigungen sind noch nicht eingerichtet.</p>
+          <p className="p-4 text-subhead text-label-2">Für Push-Benachrichtigungen fehlt noch die Einrichtung in Firebase.</p>
         ) : support === 'ios-install' ? (
           <div className="flex gap-3 p-4 text-subhead">
             <Share className="mt-0.5 size-5 shrink-0 text-label-2" aria-hidden />
@@ -155,21 +155,21 @@ function Notifications({ uid }) {
                 <ReminderRow
                   icon={Dumbbell}
                   title="Training"
-                  subtitle="Was heute geplant ist – nur an Trainingstagen"
+                  subtitle="Die Einheiten des Tages, nur an Trainingstagen"
                   value={reminders.training}
                   onChange={(v) => saveReminder(uid, 'training', v).catch(onError)}
                 />
                 <ReminderRow
                   icon={ListChecks}
                   title="Habits"
-                  subtitle="Welche Habits noch offen sind – nur wenn etwas fehlt"
+                  subtitle="Kommt nur, wenn abends noch etwas offen ist"
                   value={reminders.habits}
                   onChange={(v) => saveReminder(uid, 'habits', v).catch(onError)}
                 />
                 <ReminderRow
                   icon={CalendarCheck}
                   title="Wochenrückblick"
-                  subtitle="Jeden Sonntag – deine Woche in Zahlen"
+                  subtitle="Sonntags mit Stunden, Quote und Vergleich zur Vorwoche"
                   value={reminders.weekly}
                   onChange={(v) => saveReminder(uid, 'weekly', v).catch(onError)}
                 />
@@ -189,7 +189,7 @@ function Notifications({ uid }) {
         <button
           onClick={() =>
             showTestNotification().catch(() =>
-              setMessage('Die Test-Benachrichtigung konnte nicht angezeigt werden. Prüfe, ob Benachrichtigungen für LockedIn in den Systemeinstellungen erlaubt sind.'),
+              setMessage('Dein Gerät hat die Test-Benachrichtigung nicht angezeigt. Schau in den Systemeinstellungen nach, ob LockedIn Benachrichtigungen schicken darf.'),
             )
           }
           className="h-11 w-full rounded-2xl bg-surface text-body font-semibold hover:bg-fill"

@@ -67,10 +67,10 @@ export default function GoalBanner({ goal, setGoal, today }) {
   const current = segments.find((s) => progress < s.from + s.share)
   const totalKm = course.reduce((a, c) => a + c.km, 0)
   let position
-  if (!current) position = ' – Vorbereitung abgeschlossen. Du bist bereit.'
+  if (!current) position = '. Die Vorbereitung ist durch.'
   else if (course.length === 1)
-    position = ` – wäre deine Vorbereitung ein Rennen, wärst du jetzt bei km ${(totalKm * progress / 100).toLocaleString('de-AT', { maximumFractionDigits: 1 })} von ${fmtKm(totalKm).replace(' km', '')}.`
-  else position = ` – wäre deine Vorbereitung ein Rennen, wärst du jetzt ${PHASE[current.sport]}.`
+    position = `. Als Rennen gedacht wärst du jetzt bei km ${(totalKm * progress / 100).toLocaleString('de-AT', { maximumFractionDigits: 1 })} von ${fmtKm(totalKm).replace(' km', '')}.`
+  else position = `. Als Rennen gedacht wärst du jetzt ${PHASE[current.sport]}.`
 
   return (
     <section aria-labelledby="goal-title" className="rounded-3xl bg-surface p-5 sm:p-8">
@@ -106,7 +106,7 @@ export default function GoalBanner({ goal, setGoal, today }) {
               </>
             ) : (
               <span className="text-title-2 font-bold">
-                {daysBetween(today, target) === 0 ? 'Heute ist Race Day!' : 'Ziel erreicht 🏅'}
+                {daysBetween(today, target) === 0 ? 'Heute ist Race Day' : 'Ziel erreicht 🏅'}
               </span>
             )}
           </p>

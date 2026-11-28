@@ -315,7 +315,7 @@ function DayDetails({ id, dayName, hasTraining, entry, onRate, onNote }) {
                   key={n}
                   role="radio"
                   aria-checked={rating === n}
-                  aria-label={`${n} ${n === 1 ? 'Stern' : 'Sterne'} – ${RATING_WORDS[n]}`}
+                  aria-label={`${n} ${n === 1 ? 'Stern' : 'Sterne'}, ${RATING_WORDS[n]}`}
                   onClick={() => onRate(rating === n ? 0 : n)}
                   className="grid size-11 place-items-center rounded-full hover:bg-fill"
                 >

@@ -19,7 +19,7 @@ function useOnline() {
 
 const ERRORS = {
   'permission-denied': 'Die Cloud hat den Zugriff verweigert. Prüfe die Firestore-Regeln.',
-  'auth/unauthorized-domain': 'Diese Adresse ist in Firebase nicht freigegeben (Authentication → Einstellungen → Autorisierte Domains).',
+  'auth/unauthorized-domain': 'Firebase hat diese Adresse noch nicht freigegeben (Authentication → Einstellungen → Autorisierte Domains).',
   'auth/network-request-failed': 'Keine Verbindung zu Google. Versuch es gleich noch einmal.',
 }
 
@@ -54,12 +54,12 @@ export default function AccountBar({ brand, user, ready, error, clearError, onOp
             <p className="mt-0.5 flex min-w-0 items-center gap-1.5 text-footnote text-label-2" aria-live="polite">
               {online ? <Cloud className="size-3.5 shrink-0" aria-hidden /> : <CloudOff className="size-3.5 shrink-0" aria-hidden />}
               <span className="truncate">
-                {online ? 'Synchronisiert' : 'Offline – wird später synchronisiert'}
+                {online ? 'Synchronisiert' : 'Offline, Änderungen gehen später raus'}
                 {user.email && <span className="hidden sm:inline"> · {user.email}</span>}
               </span>
             </p>
           ) : (
-            <p className="mt-0.5 text-footnote text-label-2">Nicht angemeldet – Änderungen werden nicht gespeichert</p>
+            <p className="mt-0.5 text-footnote text-label-2">Nicht angemeldet, daher speichert LockedIn nichts</p>
           )}
         </div>
         <button

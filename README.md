@@ -1,60 +1,48 @@
 # LockedIn
 
-LockedIn – Trainingsplan + Habit-Tracker für die Triathlon-/Ironman-Vorbereitung.
-React · Tailwind CSS v4 · Lucide-Icons · Vite. Daten werden nach Google-Anmeldung in Firebase gespeichert (siehe unten).
+LockedIn ist ein Trainingsplan mit Habit-Tracker und Ernährungsteil, gebaut für die Vorbereitung auf Triathlon, Lauf- oder Radrennen. Live läuft die App auf **https://lockedin-habit.web.app**; eine zweite Kopie liegt auf https://hasueralex.github.io/LockedIn/.
+
+Technik: React 19, Tailwind CSS 4, Lucide-Icons und Vite. Daten speichert die App erst nach einer Google-Anmeldung, und zwar in Firebase Firestore. Wer nicht angemeldet ist, sieht eine leere App, die nichts behält.
 
 ```bash
 npm install
-npm run dev      # Entwicklung: http://localhost:5173
-npm run build    # Produktions-Build nach dist/
+npm run dev      # http://localhost:5173
+npm run build    # fertige Seite in dist/
 ```
 
-## Struktur
-- `src/App.jsx` – Layout, Wochen-Navigation, localStorage-State
-- `src/components/GoalBanner.jsx` – Hauptziel, Countdown, Fortschrittsbalken
-- `src/components/WeeklyPlan.jsx` – Wochenplan Mo–So, Zusammenfassung, Modal zum Hinzufügen
-- `src/components/HabitTracker.jsx` – Habits, Wochenraster, Streaks
-- `src/lib/utils.js` – `useLocalStorage`, Datums-Helfer, Sportarten-Farben
-- `src/lib/sync.js` – Google-Anmeldung und Synchronisierung mit Firestore
-- `src/components/AccountBar.jsx` – Anmelden/Abmelden und Sync-Status
+## Was wo liegt
 
-## Geräteübergreifend speichern (Firebase)
-Gespeichert wird nur mit Google-Anmeldung: Alle Daten liegen in Firebase Firestore und werden auf allen Geräten
-synchronisiert (auch offline – Änderungen werden nachgeladen). Ohne Anmeldung startet die App leer und speichert nichts;
-beim Abmelden werden die Daten vom Gerät entfernt.
+| Datei | Inhalt |
+| --- | --- |
+| `src/App.jsx` | Tabs (Training, Ernährung, PainLab), Wochenwahl, Widerrufen |
+| `src/components/GoalBanner.jsx` | Hauptziel mit Wettkampfart, Countdown und Rennstrecke als Fortschritt |
+| `src/components/WeeklyPlan.jsx` | Wochenplan, wiederkehrende Einheiten, Sterne und Notizen pro Tag |
+| `src/components/HabitTracker.jsx`, `HabitHistory.jsx` | Habits mit Serien; Verlauf als Kalender und Quote pro Woche oder Monat |
+| `src/components/WeekSummary.jsx` | Wochenrückblick ab Sonntag |
+| `src/components/FoodTracker.jsx` | Mahlzeiten, Lebensmittelsuche, Tagesziel, Verpflegung fürs Training |
+| `src/components/SettingsSheet.jsx` | Profil (Gewicht, Größe, Alter) und Push-Erinnerungen |
+| `src/lib/sync.js` | Google-Anmeldung und Abgleich mit Firestore |
+| `src/lib/nutrition.js`, `week.js` | Rechenlogik für Kalorien, Verpflegung und Wochenzahlen |
+| `scripts/send-reminders.mjs` | Verschickt fällige Push-Erinnerungen |
 
-Einrichtung (einmalig):
-1. https://console.firebase.google.com → **Projekt hinzufügen** (Google Analytics ist nicht nötig).
-2. **Build → Authentication → Jetzt starten → Anmeldemethode → Google** aktivieren.
-3. **Authentication → Einstellungen → Autorisierte Domains → Domain hinzufügen:** `hasueralex.github.io`
-4. **Build → Firestore Database → Datenbank erstellen** (Standort z. B. `europe-west3`, Produktionsmodus).
-5. **Firestore → Regeln:** Inhalt von [`firestore.rules`](firestore.rules) einfügen und veröffentlichen.
-6. **Projekteinstellungen → Allgemein → Deine Apps → Web (`</>`)** → App registrieren → das `firebaseConfig`-Objekt
-   in `src/lib/firebase-config.js` eintragen.
+## Firebase
 
-Datenmodell: `users/{uid}/data/{goal|plans|habits|habitLog}` – jede Person sieht nur ihre eigenen Daten.
+Jede Person liest und schreibt nur ihre eigenen Dokumente: `users/{uid}/data/{schlüssel}` für App-Daten und `reminders/{uid}` für Erinnerungen samt Geräten. Die Regeln dazu stehen in `firestore.rules`; der Deploy-Workflow veröffentlicht sie bei jedem Push mit.
 
-Lokal testen mit dem Firebase-Emulator: `VITE_FIREBASE_EMULATOR=1 npm run dev` (Emulator für Auth und Firestore muss laufen).
+Ein neues Projekt richtest du so ein: In der Firebase-Konsole ein Projekt anlegen, unter Authentication die Google-Anmeldung einschalten und die eigene Domain bei den autorisierten Domains eintragen, dann unter „Datenbanken und Speicher“ eine Firestore-Datenbank im Produktionsmodus erstellen (wir nutzen `europe-west3`). Das `firebaseConfig`-Objekt der Web-App gehört nach `src/lib/firebase-config.js`. Diese Werte sind öffentlich; geschützt sind die Daten allein durch die Regeln.
 
-## Lebensmittel-Datenbank
-Die Suche im Ess-Tracker nutzt `public/foods-de.json` (≈ 7.150 Lebensmittel, Werte pro 100 g, wird erst beim Öffnen der Suche geladen).
-Quelle: **Max Rubner-Institut (2025): Bundeslebensmittelschlüssel (BLS), Version 4.0 – Deutsche Nährstoffdatenbank**,
-CC BY 4.0, sowie weitere offene Quellen (CoFID, USDA, Livsmedelsverket), zusammengestellt im npm-Paket
-`@thereforejs/foods` 0.0.3. Die Datei wurde daraus erzeugt (Name, Protein, Kohlenhydrate, Fett);
-kcal sind nach EU-Verordnung 1169/2011 aus den Nährstoffen berechnet.
+Zum Testen ohne echte Cloud gibt es den Emulator: `VITE_FIREBASE_EMULATOR=1 npm run dev`, während Auth- und Firestore-Emulator laufen.
 
 ## Push-Erinnerungen
-Über das Zahnrad oben öffnen sich die Einstellungen. Dort schaltet man Push-Benachrichtigungen pro Gerät ein und stellt
-die Uhrzeiten für die Training- und Habit-Erinnerung ein (gespeichert in `reminders/{uid}`).
-- Versand: `.github/workflows/reminders.yml` startet alle 15 Minuten `scripts/send-reminders.mjs`, das fällige
-  Erinnerungen über Firebase Cloud Messaging verschickt (Secret `FIREBASE_SERVICE_ACCOUNT`).
-- Einrichtung: öffentlichen Web-Push-Schlüssel (Firebase → Projekteinstellungen → Cloud Messaging → Web-Push-Zertifikate)
-  in `src/lib/firebase-config.js` als `vapidKey` eintragen.
-- iPhone/iPad: nur wenn LockedIn über „Teilen → Zum Home-Bildschirm“ installiert ist (iOS 16.4+).
-- Lokal testen: Emulator starten, dann `FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 node scripts/send-reminders.mjs`
-  (verschickt nichts, gibt nur aus).
 
-## Online
-Live-Version: **https://lockedin-habit.web.app** (Firebase Hosting), zusätzlich https://hasueralex.github.io/LockedIn/.
-Bei jedem Push auf `main` baut GitHub Actions die App und veröffentlicht sie an beiden Orten.
-Für Firebase braucht das Repo das Secret `FIREBASE_SERVICE_ACCOUNT` (privater Schlüssel eines Dienstkontos aus den Firebase-Projekteinstellungen).
+Im Zahnrad-Menü schaltet man Benachrichtigungen pro Gerät ein und wählt Uhrzeiten für Training, Habits und den Wochenrückblick am Sonntag. GitHub Actions startet alle 15 Minuten `scripts/send-reminders.mjs` (`.github/workflows/reminders.yml`), das fällige Einträge über Firebase Cloud Messaging verschickt. GitHub hält sich dabei nicht minutengenau an den Plan, Erinnerungen kommen deshalb oft ein paar Minuten zu spät.
+
+Am iPhone klappt das nur, wenn LockedIn über „Teilen“ und „Zum Home-Bildschirm“ installiert ist (ab iOS 16.4). Der öffentliche Web-Push-Schlüssel steht als `vapidKey` in `src/lib/firebase-config.js`.
+
+## Lebensmittel-Datenbank
+
+Die Suche liest `public/foods-de.json`: rund 7.150 Lebensmittel mit Werten pro 100 g, die erst beim Öffnen der Suche geladen werden. Die Daten stammen aus dem **Bundeslebensmittelschlüssel (BLS) 4.0** des Max Rubner-Instituts (CC BY 4.0) und weiteren offenen Tabellen (CoFID, USDA, Livsmedelsverket), zusammengestellt im npm-Paket `@thereforejs/foods` 0.0.3. Das ist keine offizielle Veröffentlichung des Instituts. Die kcal hat LockedIn selbst aus den Nährstoffen berechnet, nach EU-Verordnung 1169/2011; die Werte sind nur stichprobenartig geprüft.
+
+## Veröffentlichen
+
+Jeder Push auf `main` baut die App und stellt sie auf Firebase Hosting und GitHub Pages. Dafür braucht das Repo das Secret `FIREBASE_SERVICE_ACCOUNT`, den privaten Schlüssel eines Dienstkontos aus den Firebase-Projekteinstellungen. Der Stand vom 28.11.2026 liegt zusätzlich im Branch `backup/2026-11-28`.

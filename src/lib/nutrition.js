@@ -108,7 +108,7 @@ export function fuelPlan(session, weight) {
       hint: d > 150 ? 'Gels/Riegel + Sportgetränk mischen (Glukose + Fruktose), ab Minute 20 alle 20–30 min' : 'Ab Minute 20 alle 20–30 min etwas nehmen',
     }
   } else if (d >= 45) {
-    during = { carbsPerHour: 0, fluidPerHour: 500, carbs: 0, fluid: round(500 * hours, 50), gels: 0, hint: 'Wasser reicht – bei Hitze mit etwas Salz' }
+    during = { carbsPerHour: 0, fluidPerHour: 500, carbs: 0, fluid: round(500 * hours, 50), gels: 0, hint: 'Wasser reicht, bei Hitze mit etwas Salz' }
   }
 
   const after = {
